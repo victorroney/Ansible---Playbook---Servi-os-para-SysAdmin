@@ -1,0 +1,30 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  
+  # Configuração da box (sistema operacional)
+  config.vm.box = "ubuntu/jammy64"
+  
+  # Nome da máquina virtual (como vai aparecer no VirtualBox)
+  config.vm.hostname = "meu-lab"
+  
+  # Configuração de rede (IP fixo)
+  config.vm.network "private_network", ip: "192.168.33.10"
+  
+  # Configuração de hardware
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = "meu-lab-ansible"        # Nome no VirtualBox
+    vb.memory = "1024"                  # 1GB de RAM
+    vb.cpus = 1                         # 1 CPU
+  end
+  
+  # Script para instalar coisas automaticamente ao criar a VM
+  config.vm.provision "shell", inline: <<-SHELL
+    echo "=== Configurando o sistema ==="
+    sudo apt update
+    sudo apt install -y python3 python3-pip curl wget git
+    echo "=== Instalação concluída ==="
+  SHELL
+end
+~        
