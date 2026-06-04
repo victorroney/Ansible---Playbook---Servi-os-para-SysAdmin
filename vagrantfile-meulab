@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "meu-lab"
   
   # Configuração de rede (IP fixo)
-  config.vm.network "private_network", ip: "192.168.33.10"
+  config.vm.network "private_network", ip: "192.168.56.10"
   
   # Configuração de hardware
   config.vm.provider "virtualbox" do |vb|
@@ -23,8 +23,9 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
     echo "=== Configurando o sistema ==="
     sudo apt update
-    sudo apt install -y python3 python3-pip curl wget git
-    echo "=== Instalação concluída ==="
+    sudo apt update && sudo apt upgrade -y
+    sudo apt install -y python3 python3-pip curl wget git software-properties-common 
+    sudo apt install -y  ansible
   SHELL
 end
-~        
+root@Inspiron-15-3530:/projetos/ansible-estudos#         
