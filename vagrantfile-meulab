@@ -2,30 +2,60 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  
-  # Configuração da box (sistema operacional)
-  config.vm.box = "ubuntu/jammy64"
-  
-  # Nome da máquina virtual (como vai aparecer no VirtualBox)
-  config.vm.hostname = "meu-lab"
-  
-  # Configuração de rede (IP fixo)
-  config.vm.network "private_network", ip: "192.168.56.10"
-  
-  # Configuração de hardware
+ config.vm.define "ubuntu" do |ubuntu|
+  # Configuracion system operation
+  ubuntu.vm.box = "ubuntu/jammy64"
+
+  # Name Machine
+  ubuntu.vm.hostname = "host-ansible-lab"
+
+  # Configuration Network
+  ubuntu.vm.network "private_network", ip: "192.168.56.10"
+
+  # Configuration Virtual Machine
   config.vm.provider "virtualbox" do |vb|
-    vb.name = "meu-lab-ansible"        # Nome no VirtualBox
-    vb.memory = "1024"                  # 1GB de RAM
+    vb.name = "my-lab-ansiblev2"
+    vb.memory = "1024"                  # 1GB of RAM
     vb.cpus = 1                         # 1 CPU
   end
-  
-  # Script para instalar coisas automaticamente ao criar a VM
-  config.vm.provision "shell", inline: <<-SHELL
-    echo "=== Configurando o sistema ==="
+
+  # install ansible python 
+  ubuntu.vm.provision "shell", inline: <<-SHELL
+    echo "=== Configuration system ==="
     sudo apt update
     sudo apt update && sudo apt upgrade -y
-    sudo apt install -y python3 python3-pip curl wget git software-properties-common 
+    sudo apt install -y python3 python3-pip curl wget git software-properties-common sshpass
     sudo apt install -y  ansible
   SHELL
 end
+
+
+  # Configuracion system operation centos7
+  config.vm.define "centos" do |centos|
+  centos.vm.box = "centos/7"
+
+  # Name Machine
+  centos.vm.hostname = "client"
+
+  # Configuration Network of client
+  centos.vm.network "private_network", ip: "192.168.56.11"
+
+  # Configuration Virtual Machine
+  centos.vm.provider "virtualbox" do |vb|
+    vb.name = "client-lab-ansiblev2"
+    vb.memory = "1024"                  # 1GB of RAM
+    vb.cpus = 1                         # 1 CPU
+  end
+
+  # Repo Actualization
+  centos.vm.provision "shell", inline: <<-SHELL
+    sudo yum update -y
+    sudo yum upgrade -y
+  SHELL
+ end
+end
+
+# Disable SSH authentication validation
+Vagrant.configure("2") do |config|
+  config.ssh.verify_host_key = :never
      
